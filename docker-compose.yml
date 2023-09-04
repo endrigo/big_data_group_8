@@ -1,0 +1,29 @@
+# vi docker-compose.yml
+# https://www.baeldung.com/linux/mongodb-as-docker-container
+version: '3.3'
+services:
+    mongo:
+        ports:
+            - '27017:27017'
+        container_name: dkrcomp-mongo
+        #restart: always
+        logging:
+            options:
+                max-size: 1g
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+            - MONGO_INITDB_ROOT_PASSWORD=bdung
+        image: mongo
+        volumes: 
+        - ./data_mongodb/db:/data/db
+    db:
+        build: ./docker.postgresql
+        ports:
+        - "5435:5432"
+        environment:
+        - POSTGRES_PASSWORD=321
+        - POSTGRES_USER=postgres
+        - POSTGRES_DB=conta
+        volumes:
+        - ./data_postgresql/db:/var/lib/postgresql/data
+        restart: always        
