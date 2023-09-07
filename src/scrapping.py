@@ -48,23 +48,23 @@ def scrape_registers():
 
             akas = []
 
-            for aka in akaList:
+            for akaAux in akaList:
+                for aka in akaAux.find_all('aka'):
+                    akaUid = getValue(aka.uid)
+                    akaType = getValue(aka.type)
+                    akaCategory = getValue(aka.category)
+                    akaLastName = getValue(aka.lastName)
+                    # print(f'>>> {akaUid}')
+                    # print(f'>>> {akaType}')
+                    # print(f'>>> {akaCategory}')
+                    # print(f'>>> {akaLastName}')
 
-                akaUid = getValue(aka.uid)
-                akaType = getValue(aka.type)
-                akaCategory = getValue(aka.category)
-                akaLastName = getValue(aka.lastName)
-                # print(f'>>> {akaUid}')
-                # print(f'>>> {akaType}')
-                # print(f'>>> {akaCategory}')
-                # print(f'>>> {akaLastName}')
-
-                akas.append({
-                    "uid": akaUid,
-                    "type":  akaType,
-                    "category": akaCategory,
-                    "lastName": akaLastName
-                    })
+                    akas.append({
+                        "uid": akaUid,
+                        "type":  akaType,
+                        "category": akaCategory,
+                        "lastName": akaLastName
+                        })
 
         register['akas'] = akas
 
@@ -114,22 +114,23 @@ def scrape_registers():
         else:
             idsArray = []
 
-            for ids in idsList:
-                idListUid = getValue(ids.uid)
-                idListType = getValue(ids.idType)
-                idListNumber = getValue(ids.idNumber)
-                idListCountry = getValue(ids.idCountry)
-                # print(f'>>>>> {idListUid}')
-                # print(f'>>>>> {idListType}')
-                # print(f'>>>>> {idListNumber}')
-                # print(f'>>>>> {idListCountry}')
+            for idsAux in idsList:
+                for ids in idsAux.find_all('id'):
+                    idListUid = getValue(ids.uid)
+                    idListType = getValue(ids.idType)
+                    idListNumber = getValue(ids.idNumber)
+                    idListCountry = getValue(ids.idCountry)
+                    # print(f'>>>>> {idListUid}')
+                    # print(f'>>>>> {idListType}')
+                    # print(f'>>>>> {idListNumber}')
+                    # print(f'>>>>> {idListCountry}')
 
-                idsArray.append({
-                    "uid": idListUid,
-                    "idType":  idListType,
-                    "idNumber": idListNumber,
-                    "idCountry": idListCountry
-                    })
+                    idsArray.append({
+                        "uid": idListUid,
+                        "idType":  idListType,
+                        "idNumber": idListNumber,
+                        "idCountry": idListCountry
+                        })
 
         register['ids'] = idsArray
 
@@ -140,19 +141,20 @@ def scrape_registers():
         else:
             nationalities = []
 
-            for nationality in nationalityList:
-                nationalityUid = getValue(nationality.uid)
-                nationalityCountry = getValue(nationality.country)
-                nationalityMainEntry = getValue(nationality.mainEntry)
-                # print(f'>>>>>> {nationalityUid}')
-                # print(f'>>>>>> {nationalityCountry}')
-                # print(f'>>>>>> {nationalityMainEntry}')
-  
-                nationalities.append({
-                    "uid": nationalityUid,
-                    "country":  nationalityCountry,
-                    "mainEntry": nationalityMainEntry
-                    })
+            for nationalityAux in nationalityList:
+                for nationality in nationalityAux.find_all('nationality'):
+                    nationalityUid = getValue(nationality.uid)
+                    nationalityCountry = getValue(nationality.country)
+                    nationalityMainEntry = getValue(nationality.mainEntry)
+                    # print(f'>>>>>> {nationalityUid}')
+                    # print(f'>>>>>> {nationalityCountry}')
+                    # print(f'>>>>>> {nationalityMainEntry}')
+    
+                    nationalities.append({
+                        "uid": nationalityUid,
+                        "country":  nationalityCountry,
+                        "mainEntry": nationalityMainEntry
+                        })
 
         register['nationalities'] = nationalities
 
@@ -163,19 +165,20 @@ def scrape_registers():
         else:
             datesOfBirth = []
 
-            for dateOfBirth in dateOfBirthList:
-                dateOfBirthUid = getValue(dateOfBirth.uid)
-                dateOfBirthDate = getValue(dateOfBirth.country)
-                dateOfBirthMainEntry = getValue(dateOfBirth.mainEntry)
-                # print(f'>>>>>>> {dateOfBirthUid}')
-                # print(f'>>>>>>> {dateOfBirthDate}')
-                # print(f'>>>>>>> {dateOfBirthMainEntry}')
+            for dateOfBirthAux in dateOfBirthList:
+                for dateOfBirth in dateOfBirthAux.find_all('dateOfBirthItem'):
+                    dateOfBirthUid = getValue(dateOfBirth.uid)
+                    dateOfBirthDate = getValue(dateOfBirth.dateOfBirth)
+                    dateOfBirthMainEntry = getValue(dateOfBirth.mainEntry)
+                    # print(f'>>>>>>> {dateOfBirthUid}')
+                    # print(f'>>>>>>> {dateOfBirthDate}')
+                    # print(f'>>>>>>> {dateOfBirthMainEntry}')
 
-                datesOfBirth.append({
-                    "uid": dateOfBirthUid,
-                    "country":  dateOfBirthDate,
-                    "mainEntry": dateOfBirthMainEntry
-                    })
+                    datesOfBirth.append({
+                        "uid": dateOfBirthUid,
+                        "dateOfBirth":  dateOfBirthDate,
+                        "mainEntry": dateOfBirthMainEntry
+                        })
 
         register['datesOfBirth'] = datesOfBirth
 
@@ -187,19 +190,20 @@ def scrape_registers():
 
             placesOfBirth = []
 
-            for placeOfBirth in placeOfBirthList:
-                placeOfBirthUid = getValue(placeOfBirth.uid)
-                placeOfBirthPlace = getValue(placeOfBirth.placeOfBirth)
-                placeOfBirthMainEntry = getValue(placeOfBirth.mainEntry)
-                # print(f'>>>>>>>> {placeOfBirthUid}')
-                # print(f'>>>>>>>> {placeOfBirthPlace}')
-                # print(f'>>>>>>>> {placeOfBirthMainEntry}')
+            for placeOfBirthAux in placeOfBirthList:
+                for placeOfBirth in placeOfBirthAux.find_all('placeOfBirthItem'):
+                    placeOfBirthUid = getValue(placeOfBirth.uid)
+                    placeOfBirthPlace = getValue(placeOfBirth.placeOfBirth)
+                    placeOfBirthMainEntry = getValue(placeOfBirth.mainEntry)
+                    # print(f'>>>>>>>> {placeOfBirthUid}')
+                    # print(f'>>>>>>>> {placeOfBirthPlace}')
+                    # print(f'>>>>>>>> {placeOfBirthMainEntry}')
 
-                placesOfBirth.append({
-                    "uid": placeOfBirthUid,
-                    "placeOfBirth":  placeOfBirthPlace,
-                    "mainEntry": placeOfBirthMainEntry
-                    })
+                    placesOfBirth.append({
+                        "uid": placeOfBirthUid,
+                        "placeOfBirth":  placeOfBirthPlace,
+                        "mainEntry": placeOfBirthMainEntry
+                        })
 
         register['placesOfBirth'] = placesOfBirth
 
