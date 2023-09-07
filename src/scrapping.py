@@ -30,9 +30,8 @@ def scrape_registers():
         else:
             programs = []    
 
-            for program in programList: #.stripped_strings):
-                # program = getValue(program)
-                # print(f'>> {program}')
+            for program in programList:
+
                 programs.append({
                     "program": getValue(program)
                     })
@@ -73,21 +72,14 @@ def scrape_registers():
         ###
         addressList = name.find_all('addressList')
 
-        # print(f':> {register["uid"]}')
-        # print(f':> {addressList}')
-
         if addressList is None :
             continue
         else:
 
             addressArray = []
-            # count = 0
 
             for addressAux in addressList:
                 for address in addressAux.find_all('address'):
-                    # count += 1
-                    # print(f':> {count}_{address}')
-
                     addressUid = getValue(address.uid)
                     address1 = getValue(address.address1)
                     addressCity = getValue(address.city)
@@ -108,6 +100,9 @@ def scrape_registers():
         register['address'] = addressArray
 
 
+        ###
+        ### idsList
+        ###
         idsList = name.find_all('idList')
         if idsList is None :
             continue
@@ -134,7 +129,9 @@ def scrape_registers():
 
         register['ids'] = idsArray
 
-
+        ###
+        ### nationalityList
+        ###
         nationalityList = name.find_all('nationalityList')
         if nationalityList is None :
             continue
@@ -159,6 +156,9 @@ def scrape_registers():
         register['nationalities'] = nationalities
 
 
+        ###
+        ### dateOfBirthList
+        ###
         dateOfBirthList = name.find_all('dateOfBirthList')
         if dateOfBirthList is None :
             continue
@@ -183,6 +183,9 @@ def scrape_registers():
         register['datesOfBirth'] = datesOfBirth
 
 
+        ###
+        ### placeOfBirthList
+        ###
         placeOfBirthList = name.find_all('placeOfBirthList')
         if placeOfBirthList is None :
             continue
@@ -220,9 +223,9 @@ def getValue(val):
     
     return val.text.strip()
 
-quotes = scrape_registers()
+insertArray = scrape_registers()
 
-#print(f'> {quotes}')
+#print(f'> {insertArray}')
 
 username = urllib.parse.quote_plus('mongoadmin')
 password = urllib.parse.quote_plus('bdung')
@@ -230,9 +233,8 @@ password = urllib.parse.quote_plus('bdung')
 client = pymongo.MongoClient('mongodb://%s:%s@127.0.0.1' % (username, password))
 db = client.db.ofac
 try:
-    db.insert_many(quotes)
-    print(f'inserted {len(quotes)} registers')
-# except:
-    # print('an error occurred quotes were not stored to db')
+    db.insert_many(insertArray)
+    print(f'inserted {len(insertArray)} registers')
+
 except Exception as error:
-  print("an error occurred registers were not stored to db:", error)
+    print("an error occurred registers were not stored to db:", error)
