@@ -5,8 +5,7 @@ import pymongo
 import urllib.parse
 
 
-def scrape_quotes():
-    quotes = []
+def scrape_registers():
 
     url_xml = "https://www.treasury.gov/ofac/downloads/sdn.xml"
 
@@ -16,12 +15,14 @@ def scrape_quotes():
     soup = BeautifulSoup(contenido_xml, "xml")
     sdnEntrys = soup.find_all('sdnEntry')
 
+    registers = []
+
     for name in sdnEntrys:
         
-        quote = {}
-        quote['uid'] = getValue(name.uid)
-        quote['lastName'] = getValue(name.lastName)
-        quote['sdnType'] = getValue(name.sdnType)
+        register = {}
+        register['uid'] = getValue(name.uid)
+        register['lastName'] = getValue(name.lastName)
+        register['sdnType'] = getValue(name.sdnType)
 
         programList = name.find_all('programList')
         if programList is None :
@@ -36,18 +37,14 @@ def scrape_quotes():
                     "program": getValue(program)
                     })
             
-            quote['programs'] = programs
-
-        #     print(f'>> {quote["programs"]}')
-        
-        # quotes.append(quote)
-        # continue
-
+            register['programs'] = programs
 
         akaList = name.find_all('akaList')
+        
         if akaList is None :
             continue
         else:
+
 
             akas = []
 
@@ -69,33 +66,47 @@ def scrape_quotes():
                     "lastName": akaLastName
                     })
 
-        quote['akas'] = akas
+        register['akas'] = akas
 
-
+        ###
+        ### addressList
+        ###
         addressList = name.find_all('addressList')
+
+        # print(f':> {register["uid"]}')
+        # print(f':> {addressList}')
+
         if addressList is None :
             continue
         else:
+
             addressArray = []
+            # count = 0
 
-            for address in addressList:
-                addressUid = getValue(address.uid)
-                addressCity = getValue(address.city)
-                addressCountry = getValue(address.country)
-                # print(f'>>>> {addressUid}')
-                # print(f'>>>> {addressCity}')
-                # print(f'>>>> {addressCountry}')
+            for addressAux in addressList:
+                for address in addressAux.find_all('address'):
+                    # count += 1
+                    # print(f':> {count}_{address}')
 
-                addressArray.append({
-                    "uid": addressUid,
-                    "city":  addressCity,
-                    "country": addressCountry
-                    })
+                    addressUid = getValue(address.uid)
+                    address1 = getValue(address.address1)
+                    addressCity = getValue(address.city)
+                    postalCode = getValue(address.postalCode)
+                    addressCountry = getValue(address.country)
+                    # # print(f'>>>> {addressUid}')
+                    # # print(f'>>>> {addressCity}')
+                    # # print(f'>>>> {addressCountry}')
 
-        quote['address'] = addressArray
+                    addressArray.append({
+                        "uid": addressUid,
+                        "address1": address1,
+                        "city":  addressCity,
+                        "postalCode":  postalCode,
+                        "country": addressCountry
+                        })
 
-        #quotes.append(quote)
-        #continue
+        register['address'] = addressArray
+
 
         idsList = name.find_all('idList')
         if idsList is None :
@@ -120,10 +131,7 @@ def scrape_quotes():
                     "idCountry": idListCountry
                     })
 
-        quote['ids'] = idsArray
-
-        #quotes.append(quote)
-        # continue
+        register['ids'] = idsArray
 
 
         nationalityList = name.find_all('nationalityList')
@@ -146,10 +154,7 @@ def scrape_quotes():
                     "mainEntry": nationalityMainEntry
                     })
 
-        quote['nationalities'] = nationalities
-
-        #quotes.append(quote)
-        #continue
+        register['nationalities'] = nationalities
 
 
         dateOfBirthList = name.find_all('dateOfBirthList')
@@ -172,10 +177,7 @@ def scrape_quotes():
                     "mainEntry": dateOfBirthMainEntry
                     })
 
-        quote['datesOfBirth'] = datesOfBirth
-
-        #quotes.append(quote)
-        #continue
+        register['datesOfBirth'] = datesOfBirth
 
 
         placeOfBirthList = name.find_all('placeOfBirthList')
@@ -199,33 +201,22 @@ def scrape_quotes():
                     "mainEntry": placeOfBirthMainEntry
                     })
 
-        #quote['placesOfBirth'] = placesOfBirth
+        register['placesOfBirth'] = placesOfBirth
 
         #Save all into main Array
-        quotes.append(quote)
-        # continue
+        registers.append(register)
 
-        # print("-----------")
-
-    return quotes
+    return registers
 
 
 def getValue(val):
-
-    # print(f'VAL {val}')
-
-    # if val == "-1":
-    #     return ''
-    
-    # if val == '':
-    #     return ''
     
     if val is None:
         return ''
     
     return val.text.strip()
 
-quotes = scrape_quotes()
+quotes = scrape_registers()
 
 #print(f'> {quotes}')
 
@@ -236,8 +227,8 @@ client = pymongo.MongoClient('mongodb://%s:%s@127.0.0.1' % (username, password))
 db = client.db.ofac
 try:
     db.insert_many(quotes)
-    print(f'inserted {len(quotes)} articles')
+    print(f'inserted {len(quotes)} registers')
 # except:
     # print('an error occurred quotes were not stored to db')
 except Exception as error:
-  print("an error occurred debts were not stored to db:", error)
+  print("an error occurred registers were not stored to db:", error)
